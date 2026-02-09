@@ -1,92 +1,4 @@
-const dummyCVListResponse = [
-  {
-    filename: "Software_Engineer_CV.pdf",
-    status: "success",
-    data: {
-      general_information: {
-        name: "Alice Smith",
-        phone_number: "+962 79 123 4567",
-        email: "alice.smith@example.com",
-        location: "Amman, Jordan",
-        profile_summary:
-          "Dedicated Software Engineer with 5 years of experience in full-stack development using React and Node.js.",
-      },
-      original_text: "...",
-      markdown: "...",
-      skills: ["JavaScript", "React", "Node.js", "PostgreSQL", "Tailwind CSS"],
-      certificates: [
-        "AWS Certified Solutions Architect",
-        "Meta Front-End Developer Professional Certificate",
-      ],
-      education: ["Bachelor of Computer Science - University of Jordan"],
-      work_experience: [
-        {
-          company_name: "TechFlow Solutions",
-          job_title: "Senior Developer",
-          location: "Amman",
-          start_date: "2022-01-01",
-          end_date: "2026-02-09",
-          duration: 4,
-          responsibilities: [
-            "Leading the front-end team",
-            "Architecting scalable APIs",
-          ],
-          achievements: [
-            "Reduced load times by 40%",
-            "Migrated legacy system to Microservices",
-          ],
-          technologies: ["React", "Express", "Docker"],
-        },
-      ],
-    },
-    detail: "Successfully processed",
-  },
-  {
-    filename: "Ahmed_Ali_Resume.docx",
-    status: "success",
-    data: {
-      general_information: {
-        name: "أحمد علي",
-        phone_number: "+966 50 111 2222",
-        email: "ahmed.ali@example.com",
-        location: "Riyadh, KSA",
-        profile_summary:
-          "مدير مشاريع متخصص في تكنولوجيا المعلومات مع خبرة تزيد عن 8 سنوات.",
-      },
-      original_text: "...",
-      markdown: "...",
-      skills: ["Project Management", "Agile", "Scrum", "Strategic Planning"],
-      certificates: ["PMP - Project Management Professional"],
-      education: ["ماجستير إدارة أعمال - جامعة الملك سعود"],
-      work_experience: [
-        {
-          company_name: "Riyadh Digital Agency",
-          job_title: "IT Project Manager",
-          location: "Riyadh",
-          start_date: "2020-05-15",
-          end_date: "2026-01-30",
-          duration: 5,
-          responsibilities: [
-            "Managing stakeholder expectations",
-            "Overseeing budget allocation",
-          ],
-          achievements: ["Completed 5+ high-scale projects under budget"],
-          technologies: ["Jira", "Trello", "Microsoft Project"],
-        },
-      ],
-    },
-    detail: "Successfully processed",
-  },
-];
 
-dummyCVListResponse.forEach((cv) => {
-  console.log("File Name:", cv.filename);
-  console.log("Owner Name:", cv.data.general_information.name);
-  console.log("Skills:", cv.data.skills.join(", "));
-  console.log("---");
-});
-
-//DUMMY DATA ABOVE
 // Router / Navigation
 const router = {
   navigate: (targetId) => {
@@ -174,7 +86,7 @@ const router = {
       getCvATSUploadPage();
     }
     if (targetId == "bulk-upload") {
-      getCvsATSUploadPage();
+      getManyCvsATSUploadPage();
     }
   },
 };
@@ -306,7 +218,7 @@ function findCvForSingleCvPage() {
 
           cvResultSuccessCreateAccordions(result.data);
         } else {
-          alert("حدث خطأ أثناء الرفع.");
+          alert("فشل الرفع: " + (result.error || "خطأ غير معروف"));
         }
       } catch (error) {
         console.error("Upload Error:", error);
@@ -346,7 +258,20 @@ async function sendCvToApi(file) {
   }
 }
 
-function cvResultSuccessCreateAccordions(data) {
+function cvResultSuccessCreateAccordions(data, cvFileName = null) {
+  if (cvFileName != null) {
+    const heading = document.createElement("h3");
+    heading.textContent = `اسم الملف : ${cvFileName}`;
+    heading.className = "text-xl font-bold text-gray-800  mt-2";
+    const line = document.createElement("hr");
+    line.className = "border-t border-gray-200 my-4";
+
+    const contentArea = document.getElementById("cv-content-area");
+
+    contentArea.appendChild(heading);
+    contentArea.appendChild(line);
+  }
+
   // 1. General Info (as a string)
   if (data.general_information) {
     const info = data.general_information;
@@ -517,7 +442,7 @@ function createAccordion(title, content) {
 }
 
 //generate multiple cvs page
-function getCvsATSUploadPage() {
+function getManyCvsATSUploadPage() {
   const container = document.getElementById("section-tags");
   container.classList.add("flex", "flex-col", "gap-5");
   const uploadCvCard = document.createElement("div");
@@ -535,9 +460,9 @@ function getCvsATSUploadPage() {
   );
 
   //cv list
-  const cvList = document.createElement("div");
-  cvList.id = "cv-list";
-  cvList.className = "flex flex-col gap-3";
+  const cvListContentArea = document.createElement("div");
+  cvListContentArea.id = "cv-content-area";
+  cvListContentArea.className = "flex flex-col gap-3";
 
   //cv list info
   const cvsListToUploadDiv = document.createElement("div");
@@ -548,16 +473,16 @@ function getCvsATSUploadPage() {
   const addCvToUploadListButton = document.createElement("button");
   addCvToUploadListButton.id = "add-to-upload-list-btn";
   addCvToUploadListButton.className =
-    "text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center";
+    "text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center";
   addCvToUploadListButton.textContent = "اضف سيرة ذاتية";
 
-  addCvToUploadListButton.onclick = findManyCv;
+  addCvToUploadListButton.onclick = findManyForATSUploadCv;
 
   //upload the list of cvs button
   const uploadListOfCvsButton = document.createElement("button");
   uploadListOfCvsButton.id = "upload-cvs-btn";
   uploadListOfCvsButton.className =
-    "text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center mr-3";
+    "text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center mr-3";
   uploadListOfCvsButton.textContent = "ارفع السير الذاتية";
 
   uploadListOfCvsButton.onclick = startFilesUpload;
@@ -567,36 +492,31 @@ function getCvsATSUploadPage() {
   infoTextCVS.className =
     "text-l text-black font-bold mr-3 flex items-center justify-center ml-3";
 
-  //select list start
-
+  //select list
   const langSelect = document.createElement("select");
   langSelect.id = "language-select";
-
   langSelect.className = `
   w-30 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
   focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 outline-none mr-5
   transition duration-300 appearance-none
 `;
-
   langSelect.style.backgroundImage = `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`;
   langSelect.style.backgroundRepeat = "no-repeat";
   langSelect.style.backgroundPosition = "right 0.7rem center";
   langSelect.style.backgroundSize = "1em";
 
+  //select list options
   const optEn = document.createElement("option");
   optEn.value = "en";
   optEn.textContent = "English";
   langSelect.appendChild(optEn);
-
   const optAr = document.createElement("option");
   optAr.value = "ar";
   optAr.textContent = "العربية";
   langSelect.appendChild(optAr);
 
-  //select list end
-
   container.appendChild(uploadCvCard);
-  container.appendChild(cvList);
+  container.appendChild(cvListContentArea);
   uploadCvCard.appendChild(addCvToUploadListButton);
   uploadCvCard.appendChild(uploadListOfCvsButton);
   uploadCvCard.appendChild(langSelect);
@@ -604,7 +524,7 @@ function getCvsATSUploadPage() {
   uploadCvCard.appendChild(cvsListToUploadDiv);
 }
 
-function findManyCv() {
+function findManyForATSUploadCv() {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = ".pdf,.doc,.docx";
@@ -626,6 +546,20 @@ function findManyCv() {
   fileInput.click();
 }
 
+function addCvToList(file) {
+  const isDuplicate = cvMemoryList.some(
+    (f) => f.name === file.name && f.size === file.size,
+  );
+
+  createFileCapsule(file);
+
+  if (!isDuplicate) {
+    cvMemoryList.push(file);
+    return true;
+  }
+
+  return false;
+}
 function createFileCapsule(file, onRemove) {
   // 1. The Capsule Container (Pill shape)
   const capsule = document.createElement("div");
@@ -650,8 +584,8 @@ function createFileCapsule(file, onRemove) {
     // 1. Remove from the global memory list
     const index = cvMemoryList.indexOf(file);
     if (index > -1) {
-      cvMemoryList.splice(index, 1); // Remove 1 item at that index
-      console.log(`Removed: ${file.name} | Remaining: ${cvMemoryList.length}`);
+      cvMemoryList.splice(index, 1); 
+      
     }
 
     // 2. Remove visually from the HTML
@@ -666,19 +600,27 @@ function createFileCapsule(file, onRemove) {
   cvListInfo.appendChild(capsule);
 }
 
-function addCvToList(file) {
-  const isDuplicate = cvMemoryList.some(
-    (f) => f.name === file.name && f.size === file.size,
-  );
+async function startFilesUpload() {
+  // 1. Start Loading
+  setUploadButtonLoading(true);
 
-  createFileCapsule(file);
+  // 2. Call your API function
+  const result = await sendListOfCvsToApi();
 
-  if (!isDuplicate) {
-    cvMemoryList.push(file);
-    return true;
+  // 3. Stop Loading (regardless of success or failure)
+  setUploadButtonLoading(false);
+
+  // 4. Handle Result
+  if (result && result.success) {
+    alert("تم الرفع بنجاح!");
+    // Optional: clear the list after success
+    // cvMemoryList = [];
+    // document.getElementById("cvs-list-to-upload").innerHTML = "";
+
+    renderAllCvResults(result.data);
+  } else {
+    alert("فشل الرفع: " + (result.error || "خطأ غير معروف"));
   }
-
-  return false;
 }
 
 async function sendListOfCvsToApi() {
@@ -687,6 +629,7 @@ async function sendListOfCvsToApi() {
     return;
   }
 
+   // --- API LOGIC---
   const formData = new FormData();
 
   cvMemoryList.forEach((file) => {
@@ -711,18 +654,20 @@ async function sendListOfCvsToApi() {
   } catch (error) {
     return { success: false, error: error.message };
   }
+  
 }
 
 function setUploadButtonLoading(isLoading) {
   const btn = document.getElementById("upload-cvs-btn");
+  const uploadFileBtn = document.getElementById("add-to-upload-list-btn");
   if (!btn) return; // Safety check
 
   if (isLoading) {
-    // 1. Disable the button
     btn.disabled = true;
     btn.classList.add("opacity-75", "cursor-not-allowed");
+    uploadFileBtn.classList.add("opacity-75", "cursor-not-allowed");
+    uploadFileBtn.disabled = true;
 
-    // 2. Add Spinner and Text
     btn.innerHTML = `
       <svg class="animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -733,236 +678,20 @@ function setUploadButtonLoading(isLoading) {
   } else {
     // 1. Re-enable
     btn.disabled = false;
+    uploadFileBtn.disabled = false;
     btn.classList.remove("opacity-75", "cursor-not-allowed");
+    uploadFileBtn.classList.remove("opacity-75", "cursor-not-allowed");
 
     // 2. Restore Original Text
     btn.textContent = "ارفع السير الذاتية";
   }
 }
 
-async function startFilesUpload() {
-  // 1. Start Loading
-  setUploadButtonLoading(true);
-
-  // 2. Call your API function
-  const result = await sendListOfCvsToApi();
-
-  // 3. Stop Loading (regardless of success or failure)
-  setUploadButtonLoading(false);
-
-  // 4. Handle Result
-  if (result && result.success) {
-    alert("تم الرفع بنجاح!");
-    // Optional: clear the list after success
-    // cvMemoryList = [];
-    // document.getElementById("cvs-list-to-upload").innerHTML = "";
-    renderAllCvResults(result.data);
-  } else {
-    alert("فشل الرفع: " + (result.error || "خطأ غير معروف"));
-  }
-}
-
-function createAccordionForListOfFiles(title, content, parentElement) {
-  // If no parent is provided, fallback to the default (safety check)
-  const container = parentElement || document.getElementById("section-tags");
-
-  const wrapper = document.createElement("div");
-  wrapper.className =
-    "w-full bg-white border border-gray-200 rounded-lg mt-3 overflow-hidden transition-all shadow-sm";
-
-  const header = document.createElement("button");
-  header.className =
-    "w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors duration-300";
-
-  header.innerHTML = `
-    <span class="font-bold text-gray-700 uppercase tracking-tight transition-colors duration-300 title-text">${title}</span>
-    <span class="text-gray-400 transition-transform duration-500 ease-in-out arrow-icon">
-        <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24">
-          <path d="M6 9l6 6 6-6"></path>
-        </svg>
-    </span>
-  `;
-
-  const contentDiv = document.createElement("div");
-  contentDiv.className =
-    "grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out";
-
-  const inner = document.createElement("div");
-  inner.className = "overflow-hidden";
-
-  const body = document.createElement("div");
-  body.className =
-    "p-4 border-t border-gray-100 text-gray-600 leading-relaxed opacity-0 transition-opacity duration-500";
-
-  if (Array.isArray(content)) {
-    body.innerHTML = content
-      .map(
-        (item) =>
-          `<span class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold m-1 border border-blue-100">${item}</span>`,
-      )
-      .join("");
-  } else {
-    body.innerHTML = content;
-  }
-
-  header.onclick = () => {
-    const isClosed = contentDiv.classList.contains("grid-rows-[0fr]");
-    contentDiv.classList.toggle("grid-rows-[0fr]", !isClosed);
-    contentDiv.classList.toggle("grid-rows-[1fr]", isClosed);
-    body.classList.toggle("opacity-0", !isClosed);
-    body.classList.toggle("opacity-100", isClosed);
-    header.querySelector(".arrow-icon").classList.toggle("rotate-180");
-    header.querySelector(".arrow-icon").classList.toggle("text-blue-600");
-    header.querySelector(".title-text").classList.toggle("text-blue-600");
-  };
-
-  inner.appendChild(body);
-  contentDiv.appendChild(inner);
-  wrapper.appendChild(header);
-  wrapper.appendChild(contentDiv);
-
-  // Append to the SPECIFIC parent, not the global ID
-  container.appendChild(wrapper);
-}
-
-function cvResultListOfFilesSuccessCreateAccordions(data, targetContainer) {
-  // 1. General Info
-  if (data.general_information) {
-    const info = data.general_information;
-    createAccordion(
-      "المعلومات العامة",
-      `
-      <div class="space-y-2 text-right">
-        <p><strong>الاسم:</strong> ${info.name || "غير متوفر"}</p>
-        <p><strong>البريد الالكتروني:</strong> ${info.email || "غير متوفر"}</p>
-        <p><strong>منطقة السكن:</strong> ${info.location || "غير متوفر"}</p>
-        <p><strong>رقم الهاتف:</strong> ${info.phone_number || "غير متوفر"}</p>
-        <p><strong>ملخص:</strong> ${info.profile_summary || "غير متوفر"}</p>
-      </div>
-      `,
-      targetContainer, // <--- PASS IT HERE
-    );
-  }
-
-  // 2. Skills
-  if (data.skills) {
-    createAccordionForListOfFiles(
-      "الخبرات التقنية",
-      data.skills,
-      targetContainer,
-    ); // <--- PASS IT HERE
-  }
-
-  // 3. Certificates
-  if (data.certificates) {
-    createAccordionForListOfFiles(
-      "الدورات",
-      data.certificates,
-      targetContainer,
-    ); // <--- PASS IT HERE
-  }
-
-  // 4. Education
-  if (data.education) {
-    createAccordionForListOfFiles(
-      "مستوى تعليم",
-      data.education,
-      targetContainer,
-    ); // <--- PASS IT HERE
-  }
-
-  // 5. Work Experience
-  if (data.work_experience && Array.isArray(data.work_experience)) {
-    const expHtml = data.work_experience
-      .map((job) => {
-        const respList = (job.responsibilities || [])
-          .map(
-            (r) =>
-              `<li class="text-gray-600 text-sm flex items-start gap-2"><span class="text-blue-500 font-bold">•</span> <span class="font-bold">${r}</span></li>`,
-          )
-          .join("");
-
-        const achievements = (job.achievements || [])
-          .map(
-            (r) =>
-              `<li class="text-gray-600 text-sm flex items-start gap-2"><span class="text-blue-500 font-bold">•</span> <span class="font-bold">${r}</span></li>`,
-          )
-          .join("");
-
-        const techPills = (job.technologies || [])
-          .map(
-            (tech) =>
-              `<span class="bg-white text-gray-500 text-[15px] font-bold px-2 py-0.5 rounded border border-gray-200 shadow-sm">${tech}</span>`,
-          )
-          .join("");
-
-        return `
-          <div class="mb-8 border-l-2 border-blue-100 pl-6 ml-2 last:border-0 last:mb-0 relative text-right">
-            <div class="absolute w-4 h-4 bg-blue-600 rounded-full -left-[9px] top-1 border-4 border-white shadow-sm"></div>
-            <div class="flex flex-wrap justify-between items-start gap-2 mb-1">
-              <h4 class="font-extrabold text-gray-800 text-lg leading-tight">${job.job_title}</h4>
-              <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-md uppercase border border-blue-100">${job.company_name}</span>
-            </div>
-            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4 font-medium">
-              <span>${job.location || ""}</span>
-              <span>${job.start_date} — ${job.end_date || "Present"}</span>
-            </div>
-            <div class="mb-4"><ul class="space-y-2">${respList}</ul></div>
-            <div class="mb-4"><ul class="space-y-2">${achievements}</ul></div>
-            <div class="flex flex-wrap gap-2 mt-4">${techPills}</div>
-          </div>
-        `;
-      })
-      .join("");
-
-    createAccordionForListOfFiles("الخبرات العملية", expHtml, targetContainer); // <--- PASS IT HERE
-  }
-}
-
 function renderAllCvResults(responseArray) {
-  // 1. Get the main wrapper and clear it
-  const mainWrapper = document.getElementById("cv-results-wrapper");
-  if (!mainWrapper) return;
-  mainWrapper.innerHTML = ""; // Clear old results
-
-  // 2. Loop through every file in the response
-  responseArray.forEach((cvFile) => {
-    // A. Create a "Card" for this specific file
-    const fileCard = document.createElement("div");
-    fileCard.className =
-      "w-full bg-gray-50 border-2 border-blue-100 rounded-xl p-5 mb-6 shadow-md";
-
-    // B. Create the Header (Filename)
-    const fileHeader = document.createElement("div");
-    fileHeader.className =
-      "flex items-center gap-3 mb-4 pb-4 border-b border-gray-200";
-    fileHeader.innerHTML = `
-      <div class="p-2 bg-blue-600 text-white rounded-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-      </div>
-      <div>
-        <h3 class="text-xl font-bold text-gray-800">${cvFile.filename}</h3>
-        <span class="text-sm font-semibold ${cvFile.status === "success" ? "text-green-600" : "text-red-500"}">
-          ${cvFile.status === "success" ? "تم التحليل بنجاح" : "فشل التحليل"}
-        </span>
-      </div>
-    `;
-
-    // C. Create a container for the accordions INSIDE this card
-    const accordionsContainer = document.createElement("div");
-    accordionsContainer.className = "flex flex-col gap-2";
-
-    // D. Build the structure
-    fileCard.appendChild(fileHeader);
-    fileCard.appendChild(accordionsContainer);
-    mainWrapper.appendChild(fileCard);
-
-    // E. Generate the accordions inside THIS specific container
-    if (cvFile.data) {
-      cvResultListOfFilesSuccessCreateAccordions(
-        cvFile.data,
-        accordionsContainer,
-      );
-    }
+  responseArray.forEach((cv) => {
+    
+    cvResultSuccessCreateAccordions(cv.data, cv.filename);
   });
 }
+
+
