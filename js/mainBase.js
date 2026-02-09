@@ -1,105 +1,217 @@
+const dummyCVListResponse = [
+  {
+    filename: "Software_Engineer_CV.pdf",
+    status: "success",
+    data: {
+      general_information: {
+        name: "Alice Smith",
+        phone_number: "+962 79 123 4567",
+        email: "alice.smith@example.com",
+        location: "Amman, Jordan",
+        profile_summary:
+          "Dedicated Software Engineer with 5 years of experience in full-stack development using React and Node.js.",
+      },
+      original_text: "...",
+      markdown: "...",
+      skills: ["JavaScript", "React", "Node.js", "PostgreSQL", "Tailwind CSS"],
+      certificates: [
+        "AWS Certified Solutions Architect",
+        "Meta Front-End Developer Professional Certificate",
+      ],
+      education: ["Bachelor of Computer Science - University of Jordan"],
+      work_experience: [
+        {
+          company_name: "TechFlow Solutions",
+          job_title: "Senior Developer",
+          location: "Amman",
+          start_date: "2022-01-01",
+          end_date: "2026-02-09",
+          duration: 4,
+          responsibilities: [
+            "Leading the front-end team",
+            "Architecting scalable APIs",
+          ],
+          achievements: [
+            "Reduced load times by 40%",
+            "Migrated legacy system to Microservices",
+          ],
+          technologies: ["React", "Express", "Docker"],
+        },
+      ],
+    },
+    detail: "Successfully processed",
+  },
+  {
+    filename: "Ahmed_Ali_Resume.docx",
+    status: "success",
+    data: {
+      general_information: {
+        name: "أحمد علي",
+        phone_number: "+966 50 111 2222",
+        email: "ahmed.ali@example.com",
+        location: "Riyadh, KSA",
+        profile_summary:
+          "مدير مشاريع متخصص في تكنولوجيا المعلومات مع خبرة تزيد عن 8 سنوات.",
+      },
+      original_text: "...",
+      markdown: "...",
+      skills: ["Project Management", "Agile", "Scrum", "Strategic Planning"],
+      certificates: ["PMP - Project Management Professional"],
+      education: ["ماجستير إدارة أعمال - جامعة الملك سعود"],
+      work_experience: [
+        {
+          company_name: "Riyadh Digital Agency",
+          job_title: "IT Project Manager",
+          location: "Riyadh",
+          start_date: "2020-05-15",
+          end_date: "2026-01-30",
+          duration: 5,
+          responsibilities: [
+            "Managing stakeholder expectations",
+            "Overseeing budget allocation",
+          ],
+          achievements: ["Completed 5+ high-scale projects under budget"],
+          technologies: ["Jira", "Trello", "Microsoft Project"],
+        },
+      ],
+    },
+    detail: "Successfully processed",
+  },
+];
 
+dummyCVListResponse.forEach((cv) => {
+  console.log("File Name:", cv.filename);
+  console.log("Owner Name:", cv.data.general_information.name);
+  console.log("Skills:", cv.data.skills.join(", "));
+  console.log("---");
+});
+
+//DUMMY DATA ABOVE
 // Router / Navigation
 const router = {
-    navigate: (targetId) => {
-        // Update Sidebar
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            const icon = btn.querySelector('.lucide');
-            const desc = btn.querySelector('p.text-xs');
+  navigate: (targetId) => {
+    // Update Sidebar
+    document.querySelectorAll(".nav-item").forEach((btn) => {
+      const icon = btn.querySelector(".lucide");
+      const desc = btn.querySelector("p.text-xs");
 
-            if (btn.dataset.target === targetId) {
-                btn.classList.add('bg-blue-600', 'text-white');
-                btn.classList.remove('hover:bg-gray-100');
-                if (icon) icon.classList.add('text-white');
-                if (desc) {
-                    desc.classList.remove('text-gray-500');
-                    desc.classList.add('text-blue-100');
-                }
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white');
-                btn.classList.add('hover:bg-gray-100');
-                if (icon) icon.classList.remove('text-white');
-                if (desc) {
-                    desc.classList.add('text-gray-500');
-                    desc.classList.remove('text-blue-100');
-                }
-            }
-        });
-
-        // Hide all sections
-        document.querySelectorAll('section').forEach(sec => {
-            sec.classList.remove('active-section');
-            sec.classList.add('hidden-section');
-        });
-
-        // Show target
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.classList.remove('hidden-section');
-            targetSection.classList.add('active-section');
+      if (btn.dataset.target === targetId) {
+        btn.classList.add("bg-blue-600", "text-white");
+        btn.classList.remove("hover:bg-gray-100");
+        if (icon) icon.classList.add("text-white");
+        if (desc) {
+          desc.classList.remove("text-gray-500");
+          desc.classList.add("text-blue-100");
         }
-
-        // Update Header
-        const activeBtn = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-        if (activeBtn) {
-            const label = activeBtn.querySelector('p.font-medium').textContent;
-            const desc = activeBtn.querySelector('p.text-xs').textContent;
-            const iconMap = {
-                'health': 'activity',
-                'cv-upload': 'file-text',
-                'bulk-upload': 'files',
-                'search': 'search',
-                'ranking': 'trending-up',
-                'job-posting': 'briefcase',
-                'text-tools': 'languages',
-                'salary': 'dollar-sign',
-                'assistant': 'bot'
-            };
-            const iconName = iconMap[targetId] || 'circle';
-
-            document.getElementById('current-section-label').textContent = label;
-            document.getElementById('section-title').textContent = label;
-            document.getElementById('section-desc').textContent = desc;
-
-            const headerIcon = document.getElementById('section-icon');
-            headerIcon.setAttribute('data-lucide', iconName);
-            lucide.createIcons({ nameAttr: 'data-lucide', attrs: { class: "w-6 h-6 text-blue-600" } });
+      } else {
+        btn.classList.remove("bg-blue-600", "text-white");
+        btn.classList.add("hover:bg-gray-100");
+        if (icon) icon.classList.remove("text-white");
+        if (desc) {
+          desc.classList.add("text-gray-500");
+          desc.classList.remove("text-blue-100");
         }
+      }
+    });
 
-        // Auto-refresh icons in newly visible section
-        lucide.createIcons();
+    // Hide all sections
+    document.querySelectorAll("section").forEach((sec) => {
+      sec.classList.remove("active-section");
+      sec.classList.add("hidden-section");
+    });
 
-        // Mobile menu close
-        if (window.innerWidth < 768) {
-            document.getElementById('sidebar').classList.add('translate-x-full');
-        }
+    // Show target
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.remove("hidden-section");
+      targetSection.classList.add("active-section");
     }
+
+    // Update Header
+    const activeBtn = document.querySelector(
+      `.nav-item[data-target="${targetId}"]`,
+    );
+    if (activeBtn) {
+      const label = activeBtn.querySelector("p.font-medium").textContent;
+      const desc = activeBtn.querySelector("p.text-xs").textContent;
+      const iconMap = {
+        health: "activity",
+        "cv-upload": "file-text",
+        "bulk-upload": "files",
+        search: "search",
+        ranking: "trending-up",
+        "job-posting": "briefcase",
+        "text-tools": "languages",
+        salary: "dollar-sign",
+        assistant: "bot",
+      };
+      const iconName = iconMap[targetId] || "circle";
+
+      document.getElementById("current-section-label").textContent = label;
+      document.getElementById("section-title").textContent = label;
+      document.getElementById("section-desc").textContent = desc;
+
+      const headerIcon = document.getElementById("section-icon");
+      headerIcon.setAttribute("data-lucide", iconName);
+      lucide.createIcons({
+        nameAttr: "data-lucide",
+        attrs: { class: "w-6 h-6 text-blue-600" },
+      });
+    }
+
+    // Auto-refresh icons in newly visible section
+    lucide.createIcons();
+
+    // Mobile menu close
+    if (window.innerWidth < 768) {
+      document.getElementById("sidebar").classList.add("translate-x-full");
+    }
+    const container = document.getElementById("section-tags");
+
+    container.innerHTML = "";
+    //switch pages
+    if (targetId === "cv-upload") {
+      getCvATSUploadPage();
+    }
+    if (targetId == "bulk-upload") {
+      getCvsATSUploadPage();
+    }
+  },
 };
 
 // Toggle Sidebar on mobile
-const menuBtn = document.getElementById('mobile-menu-btn');
+const menuBtn = document.getElementById("mobile-menu-btn");
 if (menuBtn) {
-    menuBtn.addEventListener('click', () => {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('translate-x-full');
-    });
+  menuBtn.addEventListener("click", () => {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("translate-x-full");
+  });
 }
 
 // Initial Load
-document.addEventListener('DOMContentLoaded', () => {
-    router.navigate('health');
-    app.checkSystemHealth();
-    document.getElementById('session-id').textContent = app.currentSessionId.slice(-8);
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   router.navigate("health");
+//   app.checkSystemHealth();
+//   document.getElementById("session-id").textContent =
+//     app.currentSessionId.slice(-8);
+// });
 
 // Update the global window object for onclick handlers in HTML
 window.router = router;
-window.app = app;
-function generateCvUploadPage() {
+const cvMemoryList = [];
+
+//
+function getCvATSUploadPage() {
   const container = document.getElementById("section-tags");
   container.classList.add("flex", "flex-col", "gap-5");
-  const uploadCvCard = document.createElement("div");
 
+  //content area
+  const cvContentArea = document.createElement("div");
+  cvContentArea.id = "cv-content-area";
+  cvContentArea.className = `flex flex-col gap-3`;
+
+  //main card
+  const uploadCvCard = document.createElement("div");
   uploadCvCard.classList.add(
     "w-full",
     "min-h-[80px]",
@@ -120,30 +232,23 @@ function generateCvUploadPage() {
   uploadCvButton.textContent = "ارفع السيرة الذاتية";
 
   //select list
-  // 1. Create the select element
   const langSelect = document.createElement("select");
   langSelect.id = "language-select";
-
-  // 2. Style it with Tailwind
   langSelect.className = `
   w-30 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
   focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 outline-none mr-5
   transition duration-300 appearance-none
 `;
-
-  // This adds the arrow as a background image so we can control its position
   langSelect.style.backgroundImage = `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`;
   langSelect.style.backgroundRepeat = "no-repeat";
   langSelect.style.backgroundPosition = "right 0.7rem center"; // <--- THIS MOVES THE ARROW
   langSelect.style.backgroundSize = "1em";
-
-  // 3. Create and add the English option
+  //list options
   const optEn = document.createElement("option");
   optEn.value = "en";
   optEn.textContent = "English";
   langSelect.appendChild(optEn);
 
-  // 4. Create and add the Arabic option
   const optAr = document.createElement("option");
   optAr.value = "ar";
   optAr.textContent = "العربية";
@@ -152,96 +257,9 @@ function generateCvUploadPage() {
   uploadCvButton.onclick = findCvForSingleCvPage;
 
   container.appendChild(uploadCvCard);
+  container.appendChild(cvContentArea);
   uploadCvCard.appendChild(uploadCvButton);
   uploadCvCard.appendChild(langSelect);
-}
-
-//generate multiple cvs page
-function generateCvsUploadPage() {
-  const container = document.getElementById("section-tags");
-  container.classList.add("flex", "flex-col", "gap-5");
-  const uploadCvCard = document.createElement("div");
-
-  uploadCvCard.classList.add(
-    "w-full",
-    "min-h-[80px]",
-    "bg-white",
-    "border",
-    "border-gray-200",
-    "rounded-lg",
-    "p-4",
-    "flex",
-    "mt-3",
-  );
-
-  //cv list
-  const cvList = document.createElement("div");
-  cvList.id = "cv-list";
-  cvList.className = "flex flex-col gap-3";
-
-  //cv list info
-  const cvsListToUploadDiv = document.createElement("div");
-  cvsListToUploadDiv.id = "cvs-list-to-upload";
-  cvsListToUploadDiv.className = "flex flex-wrap gap-3";
-
-  //button add to upload list
-  const addCvToUploadListButton = document.createElement("button");
-  addCvToUploadListButton.id = "add-to-upload-list-btn";
-  addCvToUploadListButton.className =
-    "text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center";
-  addCvToUploadListButton.textContent = "اضف سيرة ذاتية";
-
-  addCvToUploadListButton.onclick = findManyCv;
-
-  //upload the list of cvs button
-  const uploadListOfCvsButton = document.createElement("button");
-  uploadListOfCvsButton.id = "upload-cvs-btn";
-  uploadListOfCvsButton.className =
-    "text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center mr-3";
-  uploadListOfCvsButton.textContent = "ارفع السير الذاتية";
-
-  uploadListOfCvsButton.onclick = startFilesUpload;
-  //info-text
-  const infoTextCVS = document.createElement("span");
-  infoTextCVS.textContent = " السير الذاتية :";
-  infoTextCVS.className =
-    "text-l text-black font-bold mr-3 flex items-center justify-center ml-3";
-
-  //select list start
-
-  const langSelect = document.createElement("select");
-  langSelect.id = "language-select";
-
-  langSelect.className = `
-  w-30 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-  focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 outline-none mr-5
-  transition duration-300 appearance-none
-`;
-
-  langSelect.style.backgroundImage = `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`;
-  langSelect.style.backgroundRepeat = "no-repeat";
-  langSelect.style.backgroundPosition = "right 0.7rem center";
-  langSelect.style.backgroundSize = "1em";
-
-  const optEn = document.createElement("option");
-  optEn.value = "en";
-  optEn.textContent = "English";
-  langSelect.appendChild(optEn);
-
-  const optAr = document.createElement("option");
-  optAr.value = "ar";
-  optAr.textContent = "العربية";
-  langSelect.appendChild(optAr);
-
-  //select list end
-
-  container.appendChild(uploadCvCard);
-  container.appendChild(cvList);
-  uploadCvCard.appendChild(addCvToUploadListButton);
-  uploadCvCard.appendChild(uploadListOfCvsButton);
-  uploadCvCard.appendChild(langSelect);
-  uploadCvCard.appendChild(infoTextCVS);
-  uploadCvCard.appendChild(cvsListToUploadDiv);
 }
 
 function findCvForSingleCvPage() {
@@ -253,9 +271,11 @@ function findCvForSingleCvPage() {
 
   fileInput.onchange = async function (e) {
     const file = e.target.files[0];
+
+    // code in short
+    // change button to loading and if data is fetched create accordions with data from api
     if (file) {
       const originalText = btn.textContent;
-
       btn.innerHTML = `
         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -266,6 +286,7 @@ function findCvForSingleCvPage() {
 
       btn.disabled = true;
       btn.classList.add("opacity-70", "cursor-not-allowed");
+
       try {
         const result = await sendCvToApi(file);
 
@@ -273,15 +294,16 @@ function findCvForSingleCvPage() {
           alert("تم الرفع بنجاح.");
           const container = document.getElementById("section-tags");
 
-          // This looks for all divs inside the container that are NOT the upload card itself
-          // and removes them.
-          const elements = container.children;
-          for (let i = elements.length - 1; i >= 0; i--) {
-            // Keep the div that contains your "upload-cv-btn"
-            if (!elements[i].contains(btn)) {
-              elements[i].remove();
-            }
-          }
+          const cvContentArea = document.getElementById("cv-content-area");
+          cvContentArea.innerHTML = "";
+
+          // const elements = container.children;
+          // for (let i = elements.length - 1; i >= 0; i--) {
+          //   if (!elements[i].contains(btn)) {
+          //     elements[i].remove();
+          //   }
+          // }
+
           cvResultSuccessCreateAccordions(result.data);
         } else {
           alert("حدث خطأ أثناء الرفع.");
@@ -300,26 +322,28 @@ function findCvForSingleCvPage() {
   fileInput.click();
 }
 
-function findManyCv() {
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = ".pdf,.doc,.docx";
-  fileInput.multiple = true;
+async function sendCvToApi(file) {
+  const formData = new FormData();
+  const selectedLanguage = document.getElementById("language-select").value;
 
-  fileInput.onchange = (e) => {
-    // Convert the FileList (which is array-like) into a real Array
-    const files = Array.from(e.target.files);
+  formData.append("file", file);
+  formData.append("language", selectedLanguage);
 
-    // Loop through every selected file and pass it to your function
-    files.forEach((file) => {
-      addCvToList(file);
+  try {
+    const response = await fetch("http://localhost:8000/upload-cv", {
+      method: "POST",
+      body: formData,
     });
 
-    // Clear the value so the same file can be selected again if needed
-    fileInput.value = "";
-  };
-
-  fileInput.click();
+    if (response.ok) {
+      const data = await response.json();
+      return { success: true, data: data };
+    } else {
+      return { success: false, status: response.status };
+    }
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 }
 
 function cvResultSuccessCreateAccordions(data) {
@@ -422,7 +446,7 @@ function cvResultSuccessCreateAccordions(data) {
 }
 
 function createAccordion(title, content) {
-  const container = document.getElementById("section-tags");
+  const container = document.getElementById("cv-content-area");
 
   const wrapper = document.createElement("div");
   wrapper.className =
@@ -492,27 +516,114 @@ function createAccordion(title, content) {
   container.appendChild(wrapper);
 }
 
-async function sendCvToApi(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-  const selectedLanguage = document.getElementById("language-select").value;
-  formData.append("language", selectedLanguage);
+//generate multiple cvs page
+function getCvsATSUploadPage() {
+  const container = document.getElementById("section-tags");
+  container.classList.add("flex", "flex-col", "gap-5");
+  const uploadCvCard = document.createElement("div");
 
-  try {
-    const response = await fetch("http://localhost:8000/upload-cv", {
-      method: "POST",
-      body: formData,
+  uploadCvCard.classList.add(
+    "w-full",
+    "min-h-[80px]",
+    "bg-white",
+    "border",
+    "border-gray-200",
+    "rounded-lg",
+    "p-4",
+    "flex",
+    "mt-3",
+  );
+
+  //cv list
+  const cvList = document.createElement("div");
+  cvList.id = "cv-list";
+  cvList.className = "flex flex-col gap-3";
+
+  //cv list info
+  const cvsListToUploadDiv = document.createElement("div");
+  cvsListToUploadDiv.id = "cvs-list-to-upload";
+  cvsListToUploadDiv.className = "flex flex-wrap gap-3";
+
+  //button add to upload list
+  const addCvToUploadListButton = document.createElement("button");
+  addCvToUploadListButton.id = "add-to-upload-list-btn";
+  addCvToUploadListButton.className =
+    "text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center";
+  addCvToUploadListButton.textContent = "اضف سيرة ذاتية";
+
+  addCvToUploadListButton.onclick = findManyCv;
+
+  //upload the list of cvs button
+  const uploadListOfCvsButton = document.createElement("button");
+  uploadListOfCvsButton.id = "upload-cvs-btn";
+  uploadListOfCvsButton.className =
+    "text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition  gap-3 duration-500 ease-in-out flex items-center justify-center mr-3";
+  uploadListOfCvsButton.textContent = "ارفع السير الذاتية";
+
+  uploadListOfCvsButton.onclick = startFilesUpload;
+  //info-text
+  const infoTextCVS = document.createElement("span");
+  infoTextCVS.textContent = " السير الذاتية :";
+  infoTextCVS.className =
+    "text-l text-black font-bold mr-3 flex items-center justify-center ml-3";
+
+  //select list start
+
+  const langSelect = document.createElement("select");
+  langSelect.id = "language-select";
+
+  langSelect.className = `
+  w-30 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+  focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 outline-none mr-5
+  transition duration-300 appearance-none
+`;
+
+  langSelect.style.backgroundImage = `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>')`;
+  langSelect.style.backgroundRepeat = "no-repeat";
+  langSelect.style.backgroundPosition = "right 0.7rem center";
+  langSelect.style.backgroundSize = "1em";
+
+  const optEn = document.createElement("option");
+  optEn.value = "en";
+  optEn.textContent = "English";
+  langSelect.appendChild(optEn);
+
+  const optAr = document.createElement("option");
+  optAr.value = "ar";
+  optAr.textContent = "العربية";
+  langSelect.appendChild(optAr);
+
+  //select list end
+
+  container.appendChild(uploadCvCard);
+  container.appendChild(cvList);
+  uploadCvCard.appendChild(addCvToUploadListButton);
+  uploadCvCard.appendChild(uploadListOfCvsButton);
+  uploadCvCard.appendChild(langSelect);
+  uploadCvCard.appendChild(infoTextCVS);
+  uploadCvCard.appendChild(cvsListToUploadDiv);
+}
+
+function findManyCv() {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = ".pdf,.doc,.docx";
+  fileInput.multiple = true;
+
+  fileInput.onchange = (e) => {
+    // Convert the FileList (which is array-like) into a real Array
+    const files = Array.from(e.target.files);
+
+    // Loop through every selected file and pass it to your function
+    files.forEach((file) => {
+      addCvToList(file);
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return { success: true, data: data };
-    } else {
-      return { success: false, status: response.status };
-    }
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
+    // Clear the value so the same file can be selected again if needed
+    fileInput.value = "";
+  };
+
+  fileInput.click();
 }
 
 function createFileCapsule(file, onRemove) {
