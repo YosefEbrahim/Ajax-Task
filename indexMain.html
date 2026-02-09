@@ -1,193 +1,470 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ATS System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
+      body {
+        font-family: 'Cairo', sans-serif;
+      }
 
-        .hidden-section {
-            display: none !important;
-        }
+      .hidden-section {
+        display: none !important;
+      }
 
-        .active-section {
-            display: block;
-        }
+      .active-section {
+        display: block;
+      }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
 
-        ::-webkit-scrollbar-thumb {
-            background-color: #e2e8f0;
-            border-radius: 20px;
-        }
+      ::-webkit-scrollbar-thumb {
+        background-color: #e2e8f0;
+        border-radius: 20px;
+      }
 
-        .dark ::-webkit-scrollbar-thumb {
-            background-color: #334155;
-        }
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: #334155;
+      }
     </style>
-</head>
+  </head>
 
-<body class="min-h-screen bg-background text-foreground">
-
+  <body class="min-h-screen bg-background text-foreground">
     <!-- Navbar -->
-    <header class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur shadow-sm">
-        <div class="container flex h-16 items-center gap-4 px-4 mx-auto">
-            <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-gray-100 rounded-lg">
-                <i data-lucide="menu" class="w-5 h-5"></i>
-            </button>
+    <header
+      class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur shadow-sm"
+    >
+      <div class="container flex h-16 items-center gap-4 px-4 mx-auto">
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 hover:bg-gray-100 rounded-lg"
+        >
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
 
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                    <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
-                </div>
-                <div>
-                    <h1 class="font-semibold text-gray-900">نظام ATS</h1>
-                    <p class="text-xs text-gray-500">نظام تتبع المتقدمين</p>
-                </div>
-            </div>
-
-            <div class="flex-1"></div>
-
-            <div class="flex items-center gap-2">
-                <div class="border-0 shadow-none bg-gray-100 rounded-lg px-4 py-2">
-                    <p class="text-sm">
-                        <span class="text-gray-500 ml-2">القسم الحالي:</span>
-                        <span id="current-section-label" class="font-medium text-gray-900">حالة النظام</span>
-                    </p>
-                </div>
-            </div>
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center"
+          >
+            <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1 class="font-semibold text-gray-900">نظام ATS</h1>
+            <p class="text-xs text-gray-500">نظام تتبع المتقدمين</p>
+          </div>
         </div>
+
+        <div class="flex-1"></div>
+
+        <div class="flex items-center gap-2">
+          <div class="border-0 shadow-none bg-gray-100 rounded-lg px-4 py-2">
+            <p class="text-sm">
+              <span class="text-gray-500 ml-2">القسم الحالي:</span>
+              <span id="current-section-label" class="font-medium text-gray-900"
+                >حالة النظام</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
     </header>
 
     <div class="flex h-[calc(100vh-4rem)]">
-        <!-- Sidebar -->
-        <aside id="sidebar"
-            class="fixed md:sticky top-16 right-0 z-40 h-full w-72 border-l bg-white transition-transform duration-300 ease-in-out">
-            <div class="h-full overflow-y-auto p-4 space-y-2">
-                <button onclick="router.navigate('health')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="health">
-                    <i data-lucide="activity" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">حالة النظام</p>
-                        <p class="text-xs text-gray-500">فحص سلامة النظام</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('cv-upload')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="cv-upload">
-                    <i data-lucide="file-text" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">رفع سيرة ذاتية</p>
-                        <p class="text-xs text-gray-500">رفع وتحليل سيرة ذاتية واحدة</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('bulk-upload')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="bulk-upload">
-                    <i data-lucide="files" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">رفع عدة سير ذاتية</p>
-                        <p class="text-xs text-gray-500">معالجة جماعية للسير الذاتية</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('search')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="search">
-                    <i data-lucide="search" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">البحث في السير الذاتية</p>
-                        <p class="text-xs text-gray-500">بحث متقدم ودلالي</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('ranking')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="ranking">
-                    <i data-lucide="trending-up" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">ترتيب السير الذاتية</p>
-                        <p class="text-xs text-gray-500">ترتيب حسب الوصف الوظيفي</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('job-posting')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="job-posting">
-                    <i data-lucide="briefcase" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">الإعلانات الوظيفية</p>
-                        <p class="text-xs text-gray-500">تحليل وتوليد الإعلانات</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('text-tools')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="text-tools">
-                    <i data-lucide="languages" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">أدوات النصوص</p>
-                        <p class="text-xs text-gray-500">تصحيح وترجمة</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('salary')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="salary">
-                    <i data-lucide="dollar-sign" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">رؤى الرواتب</p>
-                        <p class="text-xs text-gray-500">معلومات الرواتب المتوقعة</p>
-                    </div>
-                </button>
-                <button onclick="router.navigate('assistant')"
-                    class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
-                    data-target="assistant">
-                    <i data-lucide="bot" class="w-5 h-5"></i>
-                    <div>
-                        <p class="font-medium">المساعد الذكي</p>
-                        <p class="text-xs text-gray-500">محادثة تفاعلية</p>
-                    </div>
-                </button>
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="fixed md:sticky top-16 right-0 z-40 h-full w-72 border-l bg-white transition-transform duration-300 ease-in-out"
+      >
+        <div class="h-full overflow-y-auto p-4 space-y-2">
+          <button
+            onclick="router.navigate('health')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="health"
+          >
+            <i data-lucide="activity" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">حالة النظام</p>
+              <p class="text-xs text-gray-500">فحص سلامة النظام</p>
             </div>
-        </aside>
+          </button>
+          <button
+            onclick="router.navigate('cv-upload')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="cv-upload"
+          >
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">رفع سيرة ذاتية</p>
+              <p class="text-xs text-gray-500">رفع وتحليل سيرة ذاتية واحدة</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('bulk-upload')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="bulk-upload"
+          >
+            <i data-lucide="files" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">رفع عدة سير ذاتية</p>
+              <p class="text-xs text-gray-500">معالجة جماعية للسير الذاتية</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('search')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="search"
+          >
+            <i data-lucide="search" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">البحث في السير الذاتية</p>
+              <p class="text-xs text-gray-500">بحث متقدم ودلالي</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('ranking')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="ranking"
+          >
+            <i data-lucide="trending-up" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">ترتيب السير الذاتية</p>
+              <p class="text-xs text-gray-500">ترتيب حسب الوصف الوظيفي</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('job-posting')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="job-posting"
+          >
+            <i data-lucide="briefcase" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">الإعلانات الوظيفية</p>
+              <p class="text-xs text-gray-500">تحليل وتوليد الإعلانات</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('text-tools')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="text-tools"
+          >
+            <i data-lucide="languages" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">أدوات النصوص</p>
+              <p class="text-xs text-gray-500">تصحيح وترجمة</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('salary')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="salary"
+          >
+            <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">رؤى الرواتب</p>
+              <p class="text-xs text-gray-500">معلومات الرواتب المتوقعة</p>
+            </div>
+          </button>
+          <button
+            onclick="router.navigate('assistant')"
+            class="nav-item w-full text-right p-3 rounded-lg transition-colors hover:bg-gray-100 flex items-center gap-3"
+            data-target="assistant"
+          >
+            <i data-lucide="bot" class="w-5 h-5"></i>
+            <div>
+              <p class="font-medium">المساعد الذكي</p>
+              <p class="text-xs text-gray-500">محادثة تفاعلية</p>
+            </div>
+          </button>
+        </div>
+      </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-auto bg-gray-50">
-            <div class="container max-w-7xl mx-auto p-6">
+      <!-- Main Content -->
+      <main class="flex-1 overflow-auto bg-gray-50">
+        <div class="container max-w-7xl mx-auto p-6">
+          <!-- Section Header -->
+          <div class="mb-6">
+            <div class="flex items-center gap-3 mb-2">
+              <i
+                id="section-icon"
+                data-lucide="activity"
+                class="w-6 h-6 text-blue-600"
+              ></i>
+              <h2
+                id="section-title"
+                class="text-2xl font-semibold text-gray-900"
+              >
+                حالة النظام
+              </h2>
+            </div>
+            <p id="section-desc" class="text-gray-500">فحص سلامة النظام</p>
+          </div>
 
-                <!-- Section Header -->
-                <div class="mb-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <i id="section-icon" data-lucide="activity" class="w-6 h-6 text-blue-600"></i>
-                        <h2 id="section-title" class="text-2xl font-semibold text-gray-900">حالة النظام</h2>
-                    </div>
-                    <p id="section-desc" class="text-gray-500">فحص سلامة النظام</p>
+          <!-- Sections -->
+
+          <section id="salary" class="hidden-section">
+            <!-- Form -->
+            <div class="bg-white rounded-xl border p-6 mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    for="salary-title"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                    >المسمى الوظيفي</label
+                  >
+                  <input
+                    id="salary-title"
+                    type="text"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="مثال: Software Engineer"
+                  />
                 </div>
-
-                <!-- Sections -->
-
-
+                <div>
+                  <label
+                    for="salary-years"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                    >سنوات الخبرة</label
+                  >
+                  <input
+                    id="salary-years"
+                    type="number"
+                    min="0"
+                    max="50"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="مثال: 3"
+                  />
+                </div>
+              </div>
+              <p id="salary-error" class="text-red-500 text-sm mt-2 hidden"></p>
+              <button
+                id="salary-submit-btn"
+                onclick="salarySubmit()"
+                class="mt-4 bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <i data-lucide="dollar-sign" class="w-4 h-4 text-white"></i>
+                بحث عن الرواتب
+              </button>
             </div>
-        </main>
+
+            <!-- Loading -->
+            <div id="salary-loading" class="hidden text-center py-10">
+              <div
+                class="inline-block w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"
+              ></div>
+              <p class="text-gray-500 mt-3 text-sm">
+                جاري البحث عن بيانات الرواتب...
+              </p>
+            </div>
+
+            <!-- No Results -->
+            <div
+              id="salary-empty"
+              class="hidden bg-white rounded-xl border p-8 text-center"
+            >
+              <i
+                data-lucide="search-x"
+                class="w-10 h-10 text-gray-300 mx-auto mb-3"
+              ></i>
+              <p class="text-gray-500 text-sm">
+                لا توجد بيانات لهذا البحث. جرّب تغيير المسمى الوظيفي أو عدد
+                سنوات الخبرة.
+              </p>
+            </div>
+
+            <!-- Results -->
+            <div id="salary-results" class="hidden">
+              <!-- Summary Cards -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-xl border p-4 text-center">
+                  <p class="text-xs text-gray-500 mb-1">متوسط الراتب الشهري</p>
+                  <p
+                    id="salary-monthly"
+                    class="text-xl font-bold text-blue-600"
+                  ></p>
+                  <p class="text-xs text-gray-400">دينار أردني</p>
+                </div>
+                <div class="bg-white rounded-xl border p-4 text-center">
+                  <p class="text-xs text-gray-500 mb-1">متوسط الراتب السنوي</p>
+                  <p
+                    id="salary-annual"
+                    class="text-xl font-bold text-green-600"
+                  ></p>
+                  <p class="text-xs text-gray-400">دينار أردني</p>
+                </div>
+                <div class="bg-white rounded-xl border p-4 text-center">
+                  <p class="text-xs text-gray-500 mb-1">الحد الأدنى (متوسط)</p>
+                  <p
+                    id="salary-min"
+                    class="text-xl font-bold text-gray-700"
+                  ></p>
+                  <p class="text-xs text-gray-400">دينار أردني / سنوي</p>
+                </div>
+                <div class="bg-white rounded-xl border p-4 text-center">
+                  <p class="text-xs text-gray-500 mb-1">الحد الأعلى (متوسط)</p>
+                  <p
+                    id="salary-max"
+                    class="text-xl font-bold text-gray-700"
+                  ></p>
+                  <p class="text-xs text-gray-400">دينار أردني / سنوي</p>
+                </div>
+              </div>
+
+              <!-- Job Listings Table -->
+              <div class="bg-white rounded-xl border overflow-hidden">
+                <div class="px-4 py-3 border-b bg-gray-50">
+                  <p class="text-sm font-medium text-gray-700">
+                    الوظائف المرجعية (<span id="salary-count"></span>)
+                  </p>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead class="bg-gray-50 border-b">
+                      <tr>
+                        <th
+                          class="text-right px-4 py-3 font-medium text-gray-600"
+                        >
+                          المسمى
+                        </th>
+                        <th
+                          class="text-right px-4 py-3 font-medium text-gray-600"
+                        >
+                          الموقع
+                        </th>
+                        <th
+                          class="text-right px-4 py-3 font-medium text-gray-600"
+                        >
+                          الراتب (JOD)
+                        </th>
+                        <th
+                          class="text-right px-4 py-3 font-medium text-gray-600"
+                        >
+                          الراتب (GBP)
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="salary-table-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="assistant" class="hidden-section">
+            <div
+              class="bg-white rounded-xl border flex flex-col"
+              style="height: calc(100vh - 12rem)"
+            >
+              <!-- Chat Messages -->
+              <div
+                id="chat-messages"
+                class="flex-1 overflow-y-auto p-4 space-y-4"
+              >
+                <div class="flex justify-start">
+                  <div
+                    class="bg-gray-100 rounded-xl rounded-tr-sm px-4 py-2.5 max-w-[75%]"
+                  >
+                    <p class="text-sm text-gray-800">
+                      مرحباً! أنا مساعد التوظيف الذكي. كيف يمكنني مساعدتك؟
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Rankings (shown when is_completed) -->
+              <div
+                id="chat-rankings"
+                class="hidden border-t max-h-60 overflow-y-auto"
+              >
+                <div class="p-3 bg-green-50 border-b border-green-200">
+                  <p class="text-sm font-medium text-green-700">
+                    تم الانتهاء — الترتيب النهائي:
+                  </p>
+                </div>
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-50 border-b">
+                    <tr>
+                      <th
+                        class="text-right px-4 py-2 font-medium text-gray-600"
+                      >
+                        الترتيب
+                      </th>
+                      <th
+                        class="text-right px-4 py-2 font-medium text-gray-600"
+                      >
+                        الاسم
+                      </th>
+                      <th
+                        class="text-right px-4 py-2 font-medium text-gray-600"
+                      >
+                        النتيجة
+                      </th>
+                      <th
+                        class="text-right px-4 py-2 font-medium text-gray-600"
+                      >
+                        رقم السيرة
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="chat-rankings-body"></tbody>
+                </table>
+              </div>
+
+              <!-- Input -->
+              <div class="border-t p-4">
+                <p id="chat-error" class="text-red-500 text-sm mb-2 hidden"></p>
+                <div id="chat-input-area" class="flex gap-3">
+                  <input
+                    id="chat-input"
+                    type="text"
+                    class="flex-1 border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="اكتب رسالتك هنا..."
+                    onkeydown="if (event.key === 'Enter') chatSend();"
+                  />
+                  <button
+                    id="chat-send-btn"
+                    onclick="chatSend()"
+                    class="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <i data-lucide="send" class="w-4 h-4 text-white"></i>
+                    إرسال
+                  </button>
+                </div>
+                <div id="chat-restart-area" class="hidden">
+                  <button
+                    onclick="chatRestart()"
+                    class="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-white"></i>
+                    بدء محادثة جديدة
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
 
     <!-- Scripts -->
+    <script src="js/salary.js"></script>
+    <script src="js/assistant.js"></script>
     <script src="js/mainBase.js"></script>
     <script>
-        // Init Lucide icons
-        lucide.createIcons();
+      // Init Lucide icons
+      lucide.createIcons();
     </script>
-</body>
-
+  </body>
 </html>
