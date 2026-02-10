@@ -39,7 +39,7 @@ const app = {
             }
         });
     },
-
+      
 
     analyzeJD: function() {
     const jdText = $('#jd-input').val();
