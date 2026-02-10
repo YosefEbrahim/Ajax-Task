@@ -1,0 +1,25 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
+        <h3 class="text-lg font-bold text-gray-800 mb-3"> تصحيح القواعد (Grammar)</h3>
+        <textarea id="grammarInput" class="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-500" rows="2" placeholder="He go home..."></textarea>
+        <button onclick="app.fixGrammar()" class="mt-3 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold">صحح</button>
+        
+        <div id="grammarResult" style="display: none; margin-top: 15px;" class="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p id="grammarOutput" class="text-green-900 font-bold"></p>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
+        <h3 class="text-lg font-bold text-gray-800 mb-3"> ترجمة النصوص</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+            <textarea id="transInput" class="w-full p-3 border rounded-lg bg-gray-50" rows="2" placeholder="Hello World..."></textarea>
+            <div id="transOutput" class="w-full p-3 border rounded-lg bg-gray-100 text-gray-500 flex items-center justify-center font-bold">الترجمة هنا...</div>
+        </div>
+        <button onclick="app.translateText()" class="mt-3 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold">ترجم للعربية</button>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-purple-100">
+        <h3 class="text-lg font-bold text-gray-800 mb-3"> ترجمة ملفات</h3>
+        <input type="file" id="docInput" class="block w-full text-sm text-gray-500 file:py-2 file:px-4 file:rounded-full file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+        <button onclick="app.translateDoc()" class="mt-3 w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-bold">رفع وترجمة</button>
+        <div id="docResult" class="mt-2 text-center text-sm text-purple-600 font-bold hidden"></div>
+    </div>
