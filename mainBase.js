@@ -209,6 +209,7 @@ const router = {
     }
 };
 
+// Toggle Sidebar on mobile
 const menuBtn = document.getElementById('mobile-menu-btn');
 if (menuBtn) {
     menuBtn.addEventListener('click', () => {
@@ -217,11 +218,13 @@ if (menuBtn) {
     });
 }
 
+// Initial Load
 document.addEventListener('DOMContentLoaded', () => {
     router.navigate('health');
     app.checkSystemHealth();
     document.getElementById('session-id').textContent = app.currentSessionId.slice(-8);
 });
 
+// Update the global window object for onclick handlers in HTML
 window.router = router;
 window.app = app;
